@@ -38,7 +38,7 @@ MAX_NUM_OBJ = 64 # maximum number of objects allowed per scene
 MEAN_COLOR_RGB = np.array([0.5,0.5,0.5]) # sunrgbd color is in 0~1
 
 class SunrgbdDetectionVotesDataset(Dataset):
-    def __init__(self, split_set='train', num_points=20000,
+    def __init__(self, split_set='train', num_points=10000,
         use_color=False, use_height=False, use_v1=False,
         augment=False, scan_idx_list=None):
 
@@ -46,10 +46,10 @@ class SunrgbdDetectionVotesDataset(Dataset):
         self.use_v1 = use_v1 
         if use_v1:
             self.data_path = os.path.join(ROOT_DIR,
-                'sunrgbd/sunrgbd_pc_bbox_votes_50k_v1_%s'%(split_set))
+                'sunrgbd/sunrgbd_pc_bbox_votes_10k_v1_%s'%(split_set))
         else:
             self.data_path = os.path.join(ROOT_DIR,
-                'sunrgbd/sunrgbd_pc_bbox_votes_50k_v2_%s'%(split_set))
+                'sunrgbd/sunrgbd_pc_bbox_votes_10k_v2_%s'%(split_set))
 
         self.raw_data_path = os.path.join(ROOT_DIR, 'sunrgbd/sunrgbd_trainval')
         self.scan_names = sorted(list(set([os.path.basename(x)[0:6] \

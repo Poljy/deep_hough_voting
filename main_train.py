@@ -16,7 +16,7 @@ sys.path.append(os.path.join(ROOT_DIR, 'models'))
 sys.path.append(os.path.join(ROOT_DIR, 'sunrgbd'))
 sys.path.append(os.path.join(ROOT_DIR, 'losses'))
 
-from MY_votenet import VoteNet
+from votenet import VoteNet
 from sunrgbd_detection_dataset import SunrgbdDetectionVotesDataset
 from model_util_sunrgbd import SunrgbdDatasetConfig
 from votenet_loss import votenet_loss

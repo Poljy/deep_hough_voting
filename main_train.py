@@ -77,12 +77,6 @@ print(len(TRAIN_DATALOADER), len(TEST_DATALOADER))
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-pc_features = 3
-if use_height:
-    pc_features+=1
-if use_color:
-    pc_features+=3
-
 NC = DATASET_CONFIG.num_class
 NH = DATASET_CONFIG.num_heading_bin
 NS = DATASET_CONFIG.num_size_cluster

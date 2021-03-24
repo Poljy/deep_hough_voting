@@ -35,7 +35,9 @@ use_height = True
 LOG_DIR = 'log_train'
 CHECKPOINT_PATH = os.path.join(LOG_DIR, 'checkpoint.tar')
 
-DUMP_DIR = os.path.join(LOG_DIR, 'evaluation_results')
+DUMP_DIR = os.path.join(LOG_DIR, 'evaluation_results_colored')
+
+dump_first_batches = 50
 
 ## PREPARING DUMP DIRECTORY
 
@@ -133,8 +135,8 @@ def evaluate_one_epoch():
             ap_calculator.step(batch_pred_map_cls, batch_gt_map_cls)
     
         # Dump evaluation results for visualization
-        if batch_idx == 0:
-            dump_results(end_points, DUMP_DIR, DATASET_CONFIG)
+        if batch_idx < dump_first_batches:
+            dump_results(end_points, os.path.join(DUMP_DIR,'batch'+str(batch_idx)), DATASET_CONFIG)
 
     # Log statistics
     for key in sorted(stat_dict.keys()):

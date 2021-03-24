@@ -54,6 +54,8 @@ def dump_results(end_points, dump_dir, config, inference_switch=False):
     pred_size_residual = torch.gather(end_points['size_residuals'], 2, pred_size_class.unsqueeze(-1).unsqueeze(-1).repeat(1,1,1,3)) # B,num_proposal,1,3
     pred_size_residual = pred_size_residual.squeeze(2).detach().cpu().numpy() # B,num_proposal,3
 
+    pred_sem_cls = torch.argmax(end_points['sem_cls_scores'], -1) # B,num_proposal
+
     # OTHERS
     pred_mask = end_points['pred_mask'] # B,num_proposal
     idx_beg = 0
@@ -61,6 +63,7 @@ def dump_results(end_points, dump_dir, config, inference_switch=False):
     for i in range(batch_size):
         pc = point_clouds[i,:,:]
         objectness_prob = softmax(objectness_scores[i,:,:])[:,1] # (K,)
+        pred_label = pred_sem_cls[i,:]
 
         # Dump various point clouds
         pc_util.write_ply(pc, os.path.join(dump_dir, '%06d_pc.ply'%(idx_beg+i)))
@@ -87,6 +90,10 @@ def dump_results(end_points, dump_dir, config, inference_switch=False):
                 pc_util.write_oriented_bbox(obbs[np.logical_and(objectness_prob>DUMP_CONF_THRESH, pred_mask[i,:]==1),:], os.path.join(dump_dir, '%06d_pred_confident_nms_bbox.ply'%(idx_beg+i)))
                 pc_util.write_oriented_bbox(obbs[pred_mask[i,:]==1,:], os.path.join(dump_dir, '%06d_pred_nms_bbox.ply'%(idx_beg+i)))
                 pc_util.write_oriented_bbox(obbs, os.path.join(dump_dir, '%06d_pred_bbox.ply'%(idx_beg+i)))
+                pc_util.write_oriented_bbox_colored(obbs[objectness_prob>DUMP_CONF_THRESH,:], pred_label[objectness_prob>DUMP_CONF_THRESH], os.path.join(dump_dir, '%06d_pred_confident_bbox_colored.ply'%(idx_beg+i)))
+                pc_util.write_oriented_bbox_colored(obbs[np.logical_and(objectness_prob>DUMP_CONF_THRESH, pred_mask[i,:]==1),:], pred_label[np.logical_and(objectness_prob>DUMP_CONF_THRESH, pred_mask[i,:]==1)], os.path.join(dump_dir, '%06d_pred_confident_nms_bbox_colored.ply'%(idx_beg+i)))
+                pc_util.write_oriented_bbox_colored(obbs[pred_mask[i,:]==1,:],pred_label[pred_mask[i,:]==1], os.path.join(dump_dir, '%06d_pred_nms_bbox_colored.ply'%(idx_beg+i)))
+                pc_util.write_oriented_bbox_colored(obbs, pred_label, os.path.join(dump_dir, '%06d_pred_bbox_colored.ply'%(idx_beg+i)))
 
     # Return if it is at inference time. No dumping of groundtruths
     if inference_switch:
@@ -102,7 +109,13 @@ def dump_results(end_points, dump_dir, config, inference_switch=False):
     objectness_label = end_points['objectness_label'].detach().cpu().numpy() # (B,K,)
     objectness_mask = end_points['objectness_mask'].detach().cpu().numpy() # (B,K,)
 
+
+    sem_cls_label = end_points['sem_cls_label']
+
     for i in range(batch_size):
+
+        pred_label = sem_cls_label[i,:]
+
         if np.sum(objectness_label[i,:])>0:
             pc_util.write_ply(pred_center[i,objectness_label[i,:]>0,0:3], os.path.join(dump_dir, '%06d_gt_positive_proposal_pc.ply'%(idx_beg+i)))
         if np.sum(objectness_mask[i,:])>0:
@@ -120,6 +133,8 @@ def dump_results(end_points, dump_dir, config, inference_switch=False):
         if len(obbs)>0:
             obbs = np.vstack(tuple(obbs)) # (num_gt_objects, 7)
             pc_util.write_oriented_bbox(obbs, os.path.join(dump_dir, '%06d_gt_bbox.ply'%(idx_beg+i)))
+
+            pc_util.write_oriented_bbox_colored(obbs, pred_label, os.path.join(dump_dir, '%06d_gt_bbox_colored.ply'%(idx_beg+i)))
 
     # OPTIONALL, also dump prediction and gt details
     if 'batch_pred_map_cls' in end_points:

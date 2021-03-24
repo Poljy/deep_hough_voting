@@ -425,6 +425,51 @@ def write_oriented_bbox(scene_bbox, out_filename):
     
     return
 
+def write_oriented_bbox_colored(scene_bbox, bbox_labels, out_filename):
+    """Export oriented (around Z axis) scene bbox to meshes, with colors corresponding to their label.
+    Args:
+        scene_bbox: (N x 7 numpy array): xyz pos of center and 3 lengths (dx,dy,dz)
+            and heading angle around Z axis.
+            Y forward, X right, Z upward. heading angle of positive X is 0,
+            heading angle of positive Y is 90 degrees.
+        out_filename: (string) filename
+    """
+
+    correspondances = {0:'FF0000',1:'00FFFF',2:'0000FF',3:'0000A0',4:'ADD8E6',5:'800080',6:'FFFF00',7:'00FF00',8:'FF00FF',9:'FFA500'}
+
+
+    def heading2rotmat(heading_angle):
+        pass
+        rotmat = np.zeros((3,3))
+        rotmat[2,2] = 1
+        cosval = np.cos(heading_angle)
+        sinval = np.sin(heading_angle)
+        rotmat[0:2,0:2] = np.array([[cosval, -sinval],[sinval, cosval]])
+        return rotmat
+
+    def convert_oriented_box_to_trimesh_fmt(box,label):
+        ctr = box[:3]
+        lengths = box[3:6]
+        trns = np.eye(4)
+        trns[0:3, 3] = ctr
+        trns[3,3] = 1.0            
+        trns[0:3,0:3] = heading2rotmat(box[6])
+        box_trimesh_fmt = trimesh.creation.box(lengths, trns)
+        box_trimesh_fmt.visual.vertex_colors = trimesh.visual.hex_to_rgba(correspondances[int(label)])
+        box_trimesh_fmt.visual.face_colors = trimesh.visual.hex_to_rgba(correspondances[int(label)])
+        return box_trimesh_fmt
+
+    scene = trimesh.scene.Scene()
+    for i,box in enumerate(scene_bbox):
+        scene.add_geometry(convert_oriented_box_to_trimesh_fmt(box,bbox_labels[i]))        
+    
+    mesh_list = trimesh.util.concatenate(scene.dump())
+    # save to ply file    
+    #trimesh.io.export.export_mesh(mesh_list, out_filename, file_type='ply')
+    mesh_list.export(out_filename)
+    
+    return
+
 def write_oriented_bbox_camera_coord(scene_bbox, out_filename):
     """Export oriented (around Y axis) scene bbox to meshes
     Args:

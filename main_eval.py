@@ -11,18 +11,20 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
 sys.path.append(os.path.join(ROOT_DIR, 'models'))
 sys.path.append(os.path.join(ROOT_DIR, 'sunrgbd'))
+sys.path.append(os.path.join(ROOT_DIR, 'losses'))
 
-from MY_votenet import VoteNet
+from votenet import VoteNet
+from votenet_loss import votenet_loss
 from ap_helper import APCalculator, parse_predictions, parse_groundtruths
 from sunrgbd_detection_dataset import SunrgbdDetectionVotesDataset, MAX_NUM_OBJ
 from model_util_sunrgbd import SunrgbdDatasetConfig
+from dump_helper import dump_results
 
 ###### CONFIGURATION ######
 
 #Evaluation parameters
 BATCH_SIZE = 8
 NUM_POINT = 10000
-DUMP_DIR = None
 AP_IOU_THRESHOLDS = [0.25,0.5]
 conf_thresh = 0.05
 nms_iou = 0.25
@@ -31,8 +33,9 @@ use_height = True
 
 #Storing parameters
 LOG_DIR = 'log_train'
-DUMP_DIR = os.path.join(BASE_DIR, os.path.basename(LOG_DIR))
 CHECKPOINT_PATH = os.path.join(LOG_DIR, 'checkpoint.tar')
+
+DUMP_DIR = os.path.join(LOG_DIR, 'evaluation_results')
 
 ## PREPARING DUMP DIRECTORY
 
@@ -84,7 +87,7 @@ net.to(device)
 ## INITIALIZE_LOSS AND OPTIMIZER
 
 criterion = votenet_loss
-optimizer = optim.Adam(net.parameters(), lr=BASE_LEARNING_RATE)
+optimizer = optim.Adam(net.parameters(), lr=0.001)
 
 ## LOAD CHECKPOINT
 
@@ -137,7 +140,7 @@ def evaluate_one_epoch():
     
         # Dump evaluation results for visualization
         if batch_idx == 0:
-            MODEL.dump_results(end_points, DUMP_DIR, DATASET_CONFIG)
+            dump_results(end_points, DUMP_DIR, DATASET_CONFIG)
 
     # Log statistics
     for key in sorted(stat_dict.keys()):

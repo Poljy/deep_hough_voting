@@ -36,3 +36,9 @@ plyfile
 To train a VoteNet architecture, please start the script `main_train.py`. Feel free to change the trainings parameters inside the script itself. You should obtain a final mAP above 55.
 
 To evaluate the performances, please start the script `main_eval.py`. Feel free to change the trainings parameters inside the script itself. The script will evaluate the mAP@0.25 and mAP@0.5 on the validation dataset, and store visual results with colored bounding boxes for the 50 first batches.
+
+## Some visual results
+
+![bedroom](https://github.com/pauljcb/deep_hough_voting/blob/main/figs/bedroom_detection.jpg)
+![more_visual_results](https://github.com/pauljcb/deep_hough_voting/blob/main/figs/visual_results.jpg)
+![more_visual_results_2](https://github.com/pauljcb/deep_hough_voting/blob/main/figs/visual_results_2.jpg)

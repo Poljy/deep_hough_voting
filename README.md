@@ -2,7 +2,7 @@
  
 Project for the course "Nuages de Points et Modélisation 3D" of the Master MVA (2020-2021).
 
-The goal of the project is to study the method described in the paper "Deep Hough Voting for 3D Object Detection in Point Clouds", test an implementation of the method, and reproduce some results. I chose to experiment with the official implementation of the method, rewrite some key elements, train a VoteNet architecture on the SUN RGB-D Dataset, evaluate the results and provide quantitative and qualitative evaluations in my report.
+The goal of the project is to study the method described in the paper "Deep Hough Voting for 3D Object Detection in Point Clouds" (Qi et al.,2019), test an implementation of the method, and reproduce some results. I chose to experiment with the official implementation of the method, rewrite some key elements, train a VoteNet architecture on the SUN RGB-D Dataset, evaluate the results and provide quantitative and qualitative evaluations in my report.
 
 ## Description
 

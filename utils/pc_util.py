@@ -435,7 +435,7 @@ def write_oriented_bbox_colored(scene_bbox, bbox_labels, out_filename):
         out_filename: (string) filename
     """
 
-    correspondances = {0:'FF0000',1:'00FFFF',2:'0000FF',3:'0000A0',4:'ADD8E6',5:'800080',6:'FFFF00',7:'00FF00',8:'FF00FF',9:'FFA500'}
+    correspondances = {0:'1F77B4',1:'FF7F0E',2:'2CA02C',3:'D62728',4:'9467BD',5:'8C564B',6:'E377C2',7:'7F7F7F',8:'BCBD22',9:'17BECF'}
 
 
     def heading2rotmat(heading_angle):

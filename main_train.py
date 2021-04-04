@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
@@ -26,7 +27,7 @@ from ap_helper import APCalculator, parse_predictions, parse_groundtruths
 ###### CONFIGURATION ######
 
 #Learning and evaluation parameters
-BATCH_SIZE = 8
+BATCH_SIZE = 16
 NUM_POINT = 10000
 MAX_EPOCH = 180
 use_color = False
@@ -54,7 +55,7 @@ LOG_FOUT = open(os.path.join(LOG_DIR, 'log_train.txt'), 'a')
 def log_string(out_str):
     LOG_FOUT.write(out_str+'\n')
     LOG_FOUT.flush()
-    print(out_str)
+    tqdm.write(out_str)
 
 if not os.path.exists(DUMP_DIR): os.mkdir(DUMP_DIR)
 
@@ -144,7 +145,7 @@ def train_one_epoch():
     adjust_learning_rate(optimizer, EPOCH_CNT)
     bnm_scheduler.step() # decay BN momentum
     net.train() # set model to training mode
-    for batch_idx, batch_data_label in enumerate(TRAIN_DATALOADER):
+    for batch_idx, batch_data_label in enumerate(tqdm(TRAIN_DATALOADER)):
         for key in batch_data_label:
             batch_data_label[key] = batch_data_label[key].to(device)
 
@@ -167,7 +168,7 @@ def train_one_epoch():
                 if key not in stat_dict: stat_dict[key] = 0
                 stat_dict[key] += end_points[key].item()
 
-        batch_interval = 10
+        batch_interval = 25
         if (batch_idx+1) % batch_interval == 0:
             log_string(' ---- batch: %03d ----' % (batch_idx+1))
             for key in sorted(stat_dict.keys()):
@@ -179,9 +180,9 @@ def evaluate_one_epoch():
     ap_calculator = APCalculator(ap_iou_thresh=ap_iou_threshold,
         class2type_map=DATASET_CONFIG.class2type)
     net.eval() # set model to eval mode (for bn and dp)
-    for batch_idx, batch_data_label in enumerate(TEST_DATALOADER):
-        if batch_idx % 10 == 0:
-            print('Eval batch: %d'%(batch_idx))
+    for batch_idx, batch_data_label in enumerate(tqdm(TEST_DATALOADER)):
+        #if batch_idx % 10 == 0:
+            #print('Eval batch: %d'%(batch_idx))
         for key in batch_data_label:
             batch_data_label[key] = batch_data_label[key].to(device)
         

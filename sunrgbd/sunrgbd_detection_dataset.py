@@ -46,10 +46,10 @@ class SunrgbdDetectionVotesDataset(Dataset):
         self.use_v1 = use_v1 
         if use_v1:
             self.data_path = os.path.join(ROOT_DIR,
-                'sunrgbd/sunrgbd_pc_bbox_votes_10k_v1_%s'%(split_set))
+                'sunrgbd/sunrgbd_pc_bbox_votes_20k_v1_%s'%(split_set))
         else:
             self.data_path = os.path.join(ROOT_DIR,
-                'sunrgbd/sunrgbd_pc_bbox_votes_10k_v2_%s'%(split_set))
+                'sunrgbd/sunrgbd_pc_bbox_votes_20k_v2_%s'%(split_set))
 
         self.raw_data_path = os.path.join(ROOT_DIR, 'sunrgbd/sunrgbd_trainval')
         self.scan_names = sorted(list(set([os.path.basename(x)[0:6] \

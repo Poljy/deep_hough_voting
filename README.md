@@ -2,7 +2,7 @@
  
 Project for the course "Nuages de Points et Modélisation 3D" of the Master MVA (2020-2021).
 
-The goal of the project is to study the method described in the paper "Deep Hough Voting for 3D Object Detection in Point Clouds" (Qi et al.,2019), test an implementation of the method, and reproduce some results. I chose to experiment with the official implementation of the method, rewrite some key elements, train a VoteNet architecture on the SUN RGB-D Dataset, evaluate the results and provide quantitative and qualitative evaluations in my report.
+The goal of the project is to study the method described in the paper "Deep Hough Voting for 3D Object Detection in Point Clouds" (Qi et al.,2019), test an implementation of the method, and reproduce some results. I chose to experiment with the official implementation of the method, rewrite some key elements, train a VoteNet architecture on the SUN RGB-D Dataset, evaluate the results and provide quantitative and qualitative evaluations in my [report](https://github.com/pauljcb/deep_hough_voting/blob/main/Project_Report.pdf).
 
 ## Description
 
@@ -38,6 +38,8 @@ To train a VoteNet architecture, please start the script `main_train.py`. Feel f
 To evaluate the performances, please start the script `main_eval.py`. Feel free to change the trainings parameters inside the script itself. The script will evaluate the mAP@0.25 and mAP@0.5 on the validation dataset, and store visual results with colored bounding boxes for the 50 first batches.
 
 ## Some visual results
+
+The correspondance between the box colors and the object labels can be found in my [report](https://github.com/pauljcb/deep_hough_voting/blob/main/Project_Report.pdf)
 
 ![bedroom](https://github.com/pauljcb/deep_hough_voting/blob/main/figs/bedroom_detection.jpg)
 ![more_visual_results](https://github.com/pauljcb/deep_hough_voting/blob/main/figs/visual_results.jpg)
